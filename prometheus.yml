@@ -1,0 +1,12 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: "go-exchange-auth"
+    static_configs:
+      - targets: ["localhost:2111"]
+
+  - job_name: "go-exchange-trades"
+    static_configs:
+      - targets: ["localhost:2112"]
+
