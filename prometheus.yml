@@ -4,9 +4,9 @@ global:
 scrape_configs:
   - job_name: "go-exchange-auth"
     static_configs:
-      - targets: ["localhost:2111"]
+      - targets: ["auth:2111"]
 
   - job_name: "go-exchange-trades"
     static_configs:
-      - targets: ["localhost:2112"]
+      - targets: ["trades:2112"]
 

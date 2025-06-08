@@ -1,0 +1,64 @@
+version: '3.9'
+
+services:
+    postgres:
+        image: postgres
+        container_name: go-exchange-postgres
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: 1
+            POSTGRES_DB: CryptoAuth
+        ports:
+            - "5432:5432"
+        networks:
+            - go-exchange-network
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+
+    prometheus:
+        image: prom/prometheus
+        container_name: go-exchange-prometheus
+        volumes:
+            - ./prometheus.yml:/etc/prometheus/prometheus.yml
+        ports:
+            - "9090:9090"
+        networks:
+            - go-exchange-network
+
+    grafana:
+        image: grafana/grafana
+        container_name: go-exchange-grafana
+        ports:
+            - "3030:3030"
+        networks:
+            - go-exchange-network
+        volumes:
+            - grafana_data:/var/lib/grafana
+
+    auth:
+        image: go-exchange-auth
+        container_name: go-exchange-auth
+        build: 
+            context: ../go-exchange-auth
+        ports:
+            - "5711:5711"
+            - "2111:2111"
+        env_file:
+            - ../go-exchange-auth/.env
+        depends_on:
+            - postgres
+        networks:
+            - go-exchange-network
+        volumes:
+            - ../go-exchange-auth/.env:/app/.env
+            - ../go-exchange-auth/config:/app/config
+            - ../go-exchange-auth/migrations:/app/migrations
+
+
+networks:
+    go-exchange-network:
+        driver: bridge
+
+volumes:
+    postgres_data:
+    grafana_data:
