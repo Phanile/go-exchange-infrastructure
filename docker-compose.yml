@@ -89,6 +89,22 @@ services:
             - ../go-exchange-auth/config:/app/config
             - ../go-exchange-auth/migrations:/app/migrations
 
+    trades:
+        image: go-exchange-trades
+        container_name: go-exchange-trades
+        build: 
+            context: ../go-exchange-trades
+        ports:
+            - "5721:5711"
+            - "2121:2111"
+        env_file:
+            - ../go-exchange-trades/.env
+        networks:
+            - go-exchange-network
+        volumes:
+            - ../go-exchange-trades/.env:/app/.env
+            - ../go-exchange-trades/config:/app/config
+
 
 networks:
     go-exchange-network:
