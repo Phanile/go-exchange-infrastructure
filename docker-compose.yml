@@ -15,6 +15,20 @@ services:
         volumes:
             - postgres_data:/var/lib/postgresql/data
 
+    postgresTrades:
+        image: postgres
+        container_name: go-exchange-postgresTrades
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: 1
+            POSTGRES_DB: CryptoTrades
+        ports:
+            - "5432:5432"
+        networks:
+            - go-exchange-network
+        volumes:
+            - postgres_trades_data:/var/lib/postgresql/data/trades
+
     prometheus:
         image: prom/prometheus
         container_name: go-exchange-prometheus
@@ -99,12 +113,14 @@ services:
             - "2121:2111"
         env_file:
             - ../go-exchange-trades/.env
+        depends_on:
+            - postgresTrades
         networks:
             - go-exchange-network
         volumes:
             - ../go-exchange-trades/.env:/app/.env
             - ../go-exchange-trades/config:/app/config
-
+            - ../go-exchange-trades/migrations:/app/migrations
 
 networks:
     go-exchange-network:
@@ -114,3 +130,4 @@ volumes:
     postgres_data:
     grafana_data:
     kafka_data:
+    postgres_trades_data:
